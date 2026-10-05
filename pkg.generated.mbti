@@ -1,0 +1,44 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "btlqql/moon_databridge"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn execute(Json) -> Json raise
+
+pub fn from_json(Json) -> Value
+
+pub fn group_rows(Array[Value], Array[String], String) -> Array[Value] raise InputError
+
+pub fn join_rows(Array[Value], Array[Value], String, String, prefix? : String, inner? : Bool) -> Array[Value] raise InputError
+
+pub fn profile_rows(Array[Value]) -> Value raise InputError
+
+pub fn read_csv(String, delimiter? : Char) -> Array[Array[String]] raise InputError
+
+pub fn run(Value) -> Value raise
+
+pub fn write_csv(Array[Array[String]], delimiter? : String) -> String
+
+// Errors
+pub(all) suberror InputError {
+  InputError(String)
+} derive(Eq, Show)
+
+// Types and methods
+pub(all) enum Value {
+  Null
+  Bool(Bool)
+  Number(Double)
+  String(String)
+  Array(Array[Value])
+  Object(Map[String, Value])
+} derive(Eq, @debug.Debug)
+pub fn Value::stringify(Self) -> String
+pub fn Value::to_json(Self) -> Json
+
+// Type aliases
+
+// Traits
