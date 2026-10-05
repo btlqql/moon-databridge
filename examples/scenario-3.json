@@ -1,0 +1,34 @@
+{
+  "rows": [
+    {
+      "id": 1,
+      "n": 3
+    },
+    {
+      "id": 1,
+      "n": 3
+    },
+    {
+      "id": 2,
+      "n": 0
+    }
+  ],
+  "filter": {
+    "field": "n",
+    "op": "gt",
+    "value": 1
+  },
+  "deduplicate": [
+    "id"
+  ],
+  "join": {
+    "rows": [
+      {
+        "key": 1,
+        "name": "alpha"
+      }
+    ],
+    "left_key": "id",
+    "right_key": "key"
+  }
+}

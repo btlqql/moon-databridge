@@ -1,0 +1,4 @@
+{
+  "format": "csv",
+  "text": "id,note\r\n1,\"a,b\"\r\n2,\"line1\nline2\"\r\n"
+}

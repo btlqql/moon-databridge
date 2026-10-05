@@ -1,0 +1,18 @@
+{
+  "rows": [
+    {
+      "n": "7"
+    },
+    {
+      "n": "bad"
+    },
+    {}
+  ],
+  "columns": [
+    {
+      "source": "n",
+      "type": "integer",
+      "required": true
+    }
+  ]
+}
