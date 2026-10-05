@@ -1,11 +1,17 @@
-# Moon DataBridge architecture
+# Implemented architecture
 
-Status: development plan; functionality must be checked against release documentation.
+## Core
 
-目标：让 CSV/JSONL 数据从导入、类型识别到清洗、关联、校验、输出形成可审计流程。
+CSV with escaped quotes and multiline fields; JSONL error isolation; typed column mapping with required/default/trim/lower/enum/range/scale constraints; row filters; composite-key deduplication; unique-key joins; deterministic sorting; grouped count/sum/mean; field profiling; CSV export.
 
-核心模块：CSV/JSONL 适配；类型与缺失值模型；字段映射与表达式转换；声明式约束；去重与键关联；流式执行；拒绝行与统计；CLI、导出和解释报告。格式解析优先复用可靠生态组件，核心贡献是数据变换、错误处置和有来源的结果。
+## Boundaries
 
-三个场景：订单与客户表迁移，检查孤立订单和重复键；科研数据多表汇总，统一单位、类型与缺失值；业务批量导入，输出成功记录、拒绝记录和可复核原因。至少一个场景采用可再分发的公开真实数据，并记录来源及许可证；模拟业务输入明确标注为场景数据。
+Batch in memory. JSONL diagnostics preserve physical line numbers; transformation diagnostics use parsed row indices. Missing/null join keys and duplicate right keys are rejected. Arithmetic uses finite Double; decimal accounting and streaming are outside this release. Column order for CSV export must be explicit. The CSV reader is strict about quotes and column widths; malformed CSV rejects the batch.
 
-验收：对十万行固定生成输入验证读入数 = 成功数 + 拒绝数，固定预期聚合与键关联结果；分批大小变化不影响结果。失败验证覆盖类型冲突、缺字段、重复主键、CSV 引号损坏和错误策略。与独立参考实现比较约定的转换结果。十月边界为本地 CSV/JSONL，不承诺数据库服务连接或分布式处理。
+## Integration
+
+The core accepts semantic values and returns deterministic JSON-shaped reports. Host adapters handle files, network or processes; they invoke the compiled MoonBit engine. The CLI package declares `supported_targets = "js"`; other backends test the portable core.
+
+## Validation evidence
+
+Fixture cases are hand-checked assertions. Independent reference checks and integration scripts are runnable from a clean checkout. CI executes four core backends and host checks. Historical proposal targets are not release results.
