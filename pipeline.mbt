@@ -2,6 +2,7 @@
 pub fn run(request : Value) -> Value raise {
   let columns = get(request, "columns")
   validate_columns(columns)
+  ignore(quality_gate(get(request, "quality_gate"), 0, 0))
   let rejected : Array[Value] = []
   let format = optional_str(get(request, "format"), "rows")
   let source : Array[Value] = match format {
@@ -57,6 +58,7 @@ pub fn run(request : Value) -> Value raise {
     output = output.filter(fn(row) { matches(row, get(request, "filter")) })
   }
   let before_dedup = output.length()
+  let filtered = accepted - before_dedup
   if get(request, "deduplicate") != Null {
     let keys = string_list(get(request, "deduplicate"))
     if keys.is_empty() {
@@ -74,6 +76,7 @@ pub fn run(request : Value) -> Value raise {
     })
   }
   let deduplicated = before_dedup - output.length()
+  let before_join = output.length()
   if get(request, "join") != Null {
     let join = get(request, "join")
     output = join_rows(
@@ -89,6 +92,8 @@ pub fn run(request : Value) -> Value raise {
     let key = str(get(request, "sort"))
     output.sort_by(fn(a, b) { compare_value(get(a, key), get(b, key)) })
   }
+  let before_group = output.length()
+  let join_discarded = before_join - before_group
   let profile = profile_rows(output)
   if get(request, "group") != Null {
     let group = get(request, "group")
@@ -124,5 +129,7 @@ pub fn run(request : Value) -> Value raise {
     ("accepted_before_operations", Number(accepted.to_double())),
     ("deduplicated", Number(deduplicated.to_double())),
     ("input_records", Number(input_records.to_double())),
+    ("audit", audit_rows(input_records, rejected.length(), accepted, filtered, deduplicated, join_discarded, before_group, output.length())),
+    ("quality_gate", quality_gate(get(request, "quality_gate"), input_records, rejected.length())),
   ])
 }
