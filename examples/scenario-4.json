@@ -1,0 +1,62 @@
+{
+  "rows": [
+    {
+      "id": "a",
+      "n": "2"
+    },
+    {
+      "id": "a",
+      "n": "2"
+    },
+    {
+      "id": "b",
+      "n": "0"
+    },
+    {
+      "id": "c",
+      "n": "bad"
+    },
+    {
+      "id": "d",
+      "n": "4"
+    }
+  ],
+  "columns": [
+    {
+      "source": "id",
+      "type": "string"
+    },
+    {
+      "source": "n",
+      "type": "number",
+      "required": true
+    }
+  ],
+  "filter": {
+    "field": "n",
+    "op": "gt",
+    "value": 1
+  },
+  "deduplicate": [
+    "id"
+  ],
+  "join": {
+    "rows": [
+      {
+        "id": "a",
+        "category": "x"
+      }
+    ],
+    "left_key": "id",
+    "right_key": "id",
+    "inner": true
+  },
+  "group": {
+    "keys": [],
+    "value": "n"
+  },
+  "quality_gate": {
+    "max_rejected": 0,
+    "max_rejection_fraction": 0.1
+  }
+}

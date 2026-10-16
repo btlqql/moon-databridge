@@ -16,3 +16,23 @@ result = run({'format':'csv','text':stream.getvalue(),'export_columns':['id','te
 assert result['rows'] == rows
 assert list(csv.DictReader(io.StringIO(result['csv'],newline=''))) == rows
 print('Python csv oracle: 80 quoted/Unicode/multiline records and exported round trip passed')
+
+# Revision oracle: reject/filter/deduplicate/join accounting against an independent ledger.
+random.seed(20261016)
+for iteration in range(20):
+    rows=[{'id':str(random.randrange(8)),'n':random.choice(['bad','0','2','4'])} for _ in range(30)]
+    request={'rows':rows,'columns':[{'source':'id'},{'source':'n','type':'number'}],
+        'filter':{'field':'n','op':'gt','value':1},'deduplicate':['id'],
+        'join':{'rows':[{'key':str(i)} for i in range(4)],'left_key':'id','right_key':'key','inner':True},
+        'quality_gate':{'max_rejected':3}}
+    report=run(request)
+    valid=[row for row in rows if row['n']!='bad']
+    filtered=[row for row in valid if int(row['n'])>1]
+    unique=list({row['id']:row for row in reversed(filtered)}.values())
+    joined=[row for row in unique if int(row['id'])<4]
+    expected={'input':30,'rejected':30-len(valid),'accepted':len(valid),
+        'filtered':len(valid)-len(filtered),'deduplicated':len(filtered)-len(unique),
+        'join_discarded':len(unique)-len(joined),'before_group':len(joined),'returned':len(joined),'conserved':True}
+    assert report['audit']==expected
+    assert report['quality_gate']['passed']==(30-len(valid)<=3)
+print('Independent ledger oracle: 20 randomized multi-stage pipelines and rejection gates passed')
