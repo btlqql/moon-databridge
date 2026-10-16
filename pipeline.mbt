@@ -1,5 +1,7 @@
 ///|
 pub fn run(request : Value) -> Value raise {
+  let columns = get(request, "columns")
+  validate_columns(columns)
   let rejected : Array[Value] = []
   let format = optional_str(get(request, "format"), "rows")
   let source : Array[Value] = match format {
@@ -29,7 +31,6 @@ pub fn run(request : Value) -> Value raise {
   }
   let input_records = source.length() + rejected.length()
   let mut output : Array[Value] = []
-  let columns = get(request, "columns")
   for i = 0; i < source.length(); i = i + 1 {
     try {
       ignore(obj(source[i]))

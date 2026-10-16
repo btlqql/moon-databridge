@@ -232,6 +232,7 @@ pub fn group_rows(
   keys : Array[String],
   value_field : String,
 ) -> Array[Value] raise InputError {
+  validate_group_keys(keys)
   let groups : Map[String, Array[Value]] = {}
   for row in rows {
     let key = row_key(row, keys)
