@@ -1,3 +1,3 @@
-# Version 0.1.0 boundaries
+# Version 0.2.0 boundaries
 
-Batch in memory. JSONL diagnostics preserve physical line numbers; transformation diagnostics use parsed row indices. Missing/null join keys and duplicate right keys are rejected. Arithmetic uses finite Double; decimal accounting and streaming are outside this release. Column order for CSV export must be explicit. The CSV reader is strict about quotes and column widths; malformed CSV rejects the batch.
+当前处理方式为批次内存计算。严格 CSV 的结构错误会拒绝整个 CSV 批次；JSONL 解析与记录转换错误可隔离。没有流式执行、数据库写入、分布式调度或自动修复坏数据。字段画像对应聚合之前的数据。质量门槛没有替上层应用执行阻断动作。

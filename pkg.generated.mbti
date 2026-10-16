@@ -16,6 +16,8 @@ pub fn join_rows(Array[Value], Array[Value], String, String, prefix? : String, i
 
 pub fn profile_rows(Array[Value]) -> Value raise InputError
 
+pub fn quality_gate(Value, Int, Int) -> Value raise
+
 pub fn read_csv(String, delimiter? : Char) -> Array[Array[String]] raise InputError
 
 pub fn run(Value) -> Value raise

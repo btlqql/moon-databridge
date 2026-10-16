@@ -3,9 +3,9 @@
 Tabular data pipelines, implemented in MoonBit with a JSON CLI and reusable library API.
 
 - Repository: [https://github.com/btlqql/moon-databridge](https://github.com/btlqql/moon-databridge)
-- Package: `btlqql/moon_databridge@0.1.0`
+- Package: `btlqql/moon_databridge@0.2.0`
 - License: Apache-2.0
-- Release scope: **0.1.0 initial implementation**. The broader competition proposal in `docs/proposal.md` is a reference design, not a claim that every planned capability is implemented.
+- Release scope: **0.2.0 revised component release**. The broader competition proposal in `docs/proposal.md` is a reference design, not a claim that every planned capability is implemented.
 
 ## Implemented
 
@@ -27,7 +27,7 @@ Pass `-` to read a UTF-8 JSON request from stdin. A single request must be at mo
 ## Library use
 
 ```sh
-moon add btlqql/moon_databridge@0.1.0
+moon add btlqql/moon_databridge@0.2.0
 ```
 
 In the consumer's `moon.pkg`:
@@ -59,10 +59,23 @@ node scripts/check.mjs
 python -B scripts/reference.py
 ```
 
-There are 8 checked fixture cases in `tests/cases.json`, executed both in MoonBit white-box tests and through the actual Node CLI. Independent reference checks use Python's standard library or separately written algorithms. Fixtures are synthetic and are not presented as production adoption evidence. See [input and output examples](docs/usage.md) and [current boundaries](docs/boundaries.md).
+There are 14 checked fixture cases in `tests/cases.json`, executed both in MoonBit white-box tests and through the actual Node CLI. Independent reference checks use Python's standard library or separately written algorithms. Fixtures are synthetic and are not presented as production adoption evidence. See [input and output examples](docs/usage.md) and [current boundaries](docs/boundaries.md).
 
 ## Current boundaries
 
 Batch in memory. JSONL diagnostics preserve physical line numbers; transformation diagnostics use parsed row indices. Missing/null join keys and duplicate right keys are rejected. Arithmetic uses finite Double; decimal accounting and streaming are outside this release. Column order for CSV export must be explicit. The CSV reader is strict about quotes and column widths; malformed CSV rejects the batch.
 
 See [source and dependency attribution](THIRD_PARTY.md). This release does not establish competition eligibility or organizer acceptance.
+
+
+## Version 0.2.0 revision
+
+Row reconciliation audits and rejection quality gates. Column schemas are validated before processing even empty inputs; grouping keys cannot overwrite aggregate fields.
+
+当前处理方式为批次内存计算。严格 CSV 的结构错误会拒绝整个 CSV 批次；JSONL 解析与记录转换错误可隔离。没有流式执行、数据库写入、分布式调度或自动修复坏数据。字段画像对应聚合之前的数据。质量门槛没有替上层应用执行阻断动作。
+
+Run the additional complete scenario:
+
+```sh
+moon run cmd/main --target js -- examples/scenario-4.json
+```

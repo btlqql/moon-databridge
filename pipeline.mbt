@@ -129,7 +129,26 @@ pub fn run(request : Value) -> Value raise {
     ("accepted_before_operations", Number(accepted.to_double())),
     ("deduplicated", Number(deduplicated.to_double())),
     ("input_records", Number(input_records.to_double())),
-    ("audit", audit_rows(input_records, rejected.length(), accepted, filtered, deduplicated, join_discarded, before_group, output.length())),
-    ("quality_gate", quality_gate(get(request, "quality_gate"), input_records, rejected.length())),
+    (
+      "audit",
+      audit_rows(
+        input_records,
+        rejected.length(),
+        accepted,
+        filtered,
+        deduplicated,
+        join_discarded,
+        before_group,
+        output.length(),
+      ),
+    ),
+    (
+      "quality_gate",
+      quality_gate(
+        get(request, "quality_gate"),
+        input_records,
+        rejected.length(),
+      ),
+    ),
   ])
 }

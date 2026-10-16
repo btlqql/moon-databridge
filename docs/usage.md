@@ -200,3 +200,200 @@ Expected: nonzero exit with an input error.
 ```
 
 Expected: nonzero exit with an input error.
+
+
+# 0.2.0 additional executable scenarios
+
+## reconcile every pipeline stage
+
+```json
+{
+  "rows": [
+    {
+      "id": "a",
+      "n": "2"
+    },
+    {
+      "id": "a",
+      "n": "2"
+    },
+    {
+      "id": "b",
+      "n": "0"
+    },
+    {
+      "id": "c",
+      "n": "bad"
+    },
+    {
+      "id": "d",
+      "n": "4"
+    }
+  ],
+  "columns": [
+    {
+      "source": "id",
+      "type": "string"
+    },
+    {
+      "source": "n",
+      "type": "number",
+      "required": true
+    }
+  ],
+  "filter": {
+    "field": "n",
+    "op": "gt",
+    "value": 1
+  },
+  "deduplicate": [
+    "id"
+  ],
+  "join": {
+    "rows": [
+      {
+        "id": "a",
+        "category": "x"
+      }
+    ],
+    "left_key": "id",
+    "right_key": "id",
+    "inner": true
+  },
+  "group": {
+    "keys": [],
+    "value": "n"
+  },
+  "quality_gate": {
+    "max_rejected": 0,
+    "max_rejection_fraction": 0.1
+  }
+}
+```
+
+Expected result fields:
+
+```json
+{
+  "audit": {
+    "input": 5,
+    "rejected": 1,
+    "accepted": 4,
+    "filtered": 1,
+    "deduplicated": 1,
+    "join_discarded": 1,
+    "before_group": 1,
+    "returned": 1,
+    "conserved": true
+  },
+  "quality_gate/passed": false,
+  "quality_gate/violations": [
+    "max_rejected",
+    "max_rejection_fraction"
+  ],
+  "rows/0/sum": 2
+}
+```
+
+## quality threshold equality
+
+```json
+{
+  "format": "jsonl",
+  "text": "{\"n\":1}\nbad\n{\"n\":2}",
+  "quality_gate": {
+    "max_rejected": 1,
+    "max_rejection_fraction": 0.5
+  }
+}
+```
+
+Expected result fields:
+
+```json
+{
+  "audit/input": 3,
+  "audit/rejected": 1,
+  "quality_gate/passed": true
+}
+```
+
+## empty quality denominator
+
+```json
+{
+  "rows": [],
+  "quality_gate": {
+    "max_rejected": 0,
+    "max_rejection_fraction": 0
+  }
+}
+```
+
+Expected result fields:
+
+```json
+{
+  "quality_gate/passed": true,
+  "quality_gate/rejection_fraction": 0,
+  "audit/conserved": true
+}
+```
+
+## all rejected remains conserved
+
+```json
+{
+  "rows": [
+    {
+      "n": "bad"
+    }
+  ],
+  "columns": [
+    {
+      "source": "n",
+      "type": "number"
+    }
+  ],
+  "quality_gate": {
+    "max_rejection_fraction": 0.5
+  }
+}
+```
+
+Expected result fields:
+
+```json
+{
+  "rows": [],
+  "audit/conserved": true,
+  "quality_gate/passed": false,
+  "quality_gate/rejection_fraction": 1
+}
+```
+
+## bad quality limit
+
+```json
+{
+  "rows": [],
+  "quality_gate": {
+    "max_rejected": 1.5
+  }
+}
+```
+
+Expected: an input error.
+
+## unknown quality option
+
+```json
+{
+  "rows": [],
+  "quality_gate": {
+    "max_errors": 0
+  }
+}
+```
+
+Expected: an input error.
