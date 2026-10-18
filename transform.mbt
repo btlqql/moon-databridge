@@ -104,7 +104,7 @@ fn compare_value(a : Value, b : Value) -> Int {
 }
 
 ///|
-fn matches(row : Value, condition : Value) -> Bool raise InputError {
+fn match_leaf(row : Value, condition : Value) -> Bool raise InputError {
   let actual = get(row, str(get(condition, "field")))
   let expected = get(condition, "value")
   match optional_str(get(condition, "op"), "eq") {

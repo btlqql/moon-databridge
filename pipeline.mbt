@@ -55,7 +55,7 @@ pub fn run(request : Value) -> Value raise {
   }
   let accepted = output.length()
   if get(request, "filter") != Null {
-    output = output.filter(fn(row) { matches(row, get(request, "filter")) })
+    output = filter_rows(output, get(request, "filter"))
   }
   let before_dedup = output.length()
   let filtered = accepted - before_dedup
