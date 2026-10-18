@@ -95,7 +95,7 @@ fn transform_row(row : Value, columns : Array[Value]) -> Value raise InputError 
 }
 
 ///|
-fn compare_value(a : Value, b : Value) -> Int {
+fn compare_value(a : Value, b : Value) -> Int32 {
   match (a, b) {
     (Number(x), Number(y)) => x.compare(y)
     (String(x), String(y)) => x.compare(y)
@@ -132,8 +132,8 @@ pub fn join_rows(
   right : Array[Value],
   left_key : String,
   right_key : String,
-  prefix? : String = "right_",
-  inner? : Bool = false,
+  prefix~ : String = "right_",
+  inner~ : Bool = false,
 ) -> Array[Value] raise InputError {
   let index : Map[String, Value] = {}
   for row in right {

@@ -1,5 +1,9 @@
 ///|
-pub fn quality_gate(config : Value, input : Int, rejected : Int) -> Value raise {
+pub fn quality_gate(
+  config : Value,
+  input : Int32,
+  rejected : Int32,
+) -> Value raise {
   if input < 0 || rejected < 0 || rejected > input {
     raise InputError("invalid quality gate row counts")
   }
@@ -44,14 +48,14 @@ pub fn quality_gate(config : Value, input : Int, rejected : Int) -> Value raise 
 
 ///|
 fn audit_rows(
-  input : Int,
-  rejected : Int,
-  accepted : Int,
-  filtered : Int,
-  deduplicated : Int,
-  join_discarded : Int,
-  before_group : Int,
-  returned : Int,
+  input : Int32,
+  rejected : Int32,
+  accepted : Int32,
+  filtered : Int32,
+  deduplicated : Int32,
+  join_discarded : Int32,
+  before_group : Int32,
+  returned : Int32,
 ) -> Value raise {
   let conserved = input ==
     rejected + filtered + deduplicated + join_discarded + before_group &&

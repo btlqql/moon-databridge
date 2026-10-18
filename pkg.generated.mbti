@@ -8,6 +8,8 @@ import {
 // Values
 pub fn execute(Json) -> Json raise
 
+pub fn filter_rows(Array[Value], Value) -> Array[Value] raise
+
 pub fn from_json(Json) -> Value
 
 pub fn group_rows(Array[Value], Array[String], String) -> Array[Value] raise InputError

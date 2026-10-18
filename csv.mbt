@@ -1,7 +1,7 @@
 ///|
 pub fn read_csv(
   source : String,
-  delimiter? : Char = ',',
+  delimiter~ : Char = ',',
 ) -> Array[Array[String]] raise InputError {
   let rows : Array[Array[String]] = []
   let mut row : Array[String] = []
@@ -62,7 +62,7 @@ pub fn read_csv(
 ///|
 pub fn write_csv(
   rows : Array[Array[String]],
-  delimiter? : String = ",",
+  delimiter~ : String = ",",
 ) -> String {
   rows
   .map(fn(row) {
