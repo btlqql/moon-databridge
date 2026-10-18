@@ -1,0 +1,31 @@
+{
+  "rows": [
+    {
+      "n": 1,
+      "kind": "a"
+    },
+    {
+      "n": 2,
+      "kind": "b"
+    },
+    {
+      "n": 3,
+      "kind": "a"
+    }
+  ],
+  "filter": {
+    "all": [
+      {
+        "field": "n",
+        "op": "ge",
+        "value": 2
+      },
+      {
+        "not": {
+          "field": "kind",
+          "value": "b"
+        }
+      }
+    ]
+  }
+}

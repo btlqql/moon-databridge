@@ -327,5 +327,118 @@
     },
     "expected": {},
     "error": true
+  },
+  {
+    "name": "followup composite eligibility",
+    "request": {
+      "rows": [
+        {
+          "n": 1,
+          "kind": "a"
+        },
+        {
+          "n": 2,
+          "kind": "b"
+        },
+        {
+          "n": 3,
+          "kind": "a"
+        }
+      ],
+      "filter": {
+        "all": [
+          {
+            "field": "n",
+            "op": "ge",
+            "value": 2
+          },
+          {
+            "not": {
+              "field": "kind",
+              "value": "b"
+            }
+          }
+        ]
+      }
+    },
+    "expected": {
+      "rows": [
+        {
+          "n": 3,
+          "kind": "a"
+        }
+      ],
+      "audit/filtered": 2
+    },
+    "error": false
+  },
+  {
+    "name": "followup empty logical identities",
+    "request": {
+      "rows": [
+        {
+          "n": 1
+        }
+      ],
+      "filter": {
+        "any": []
+      }
+    },
+    "expected": {
+      "rows": [],
+      "audit/conserved": true
+    },
+    "error": false
+  },
+  {
+    "name": "followup invalid empty batch filter",
+    "request": {
+      "rows": [],
+      "filter": {
+        "all": [],
+        "field": "x"
+      }
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "name": "followup or branches",
+    "request": {
+      "rows": [
+        {
+          "n": 1
+        },
+        {
+          "n": 2
+        },
+        {
+          "n": 3
+        }
+      ],
+      "filter": {
+        "any": [
+          {
+            "field": "n",
+            "value": 1
+          },
+          {
+            "field": "n",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "expected": {
+      "rows": [
+        {
+          "n": 1
+        },
+        {
+          "n": 3
+        }
+      ]
+    },
+    "error": false
   }
 ]
