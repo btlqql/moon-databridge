@@ -37,3 +37,4 @@ jobs:
       - run: node scripts/check.mjs
       - run: python -B scripts/reference.py
       - run: python -B scripts/followup_reference.py
+      - run: python -B scripts/review-reference.py

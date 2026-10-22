@@ -5,6 +5,10 @@ fn validate_columns(columns : Value) -> Unit raise {
   }
   let targets : Map[String, Bool] = Map([])
   for column in arr(columns) {
+    fields_only(column, [
+      "source", "target", "type", "default", "required", "trim", "lower", "empty_as_null",
+      "min", "max", "enum", "scale",
+    ])
     ignore(obj(column))
     let source = str(get(column, "source"))
     let target = optional_str(get(column, "target"), source)

@@ -18,6 +18,7 @@ fn validate_condition(condition : Value, depth : Int32) -> Unit raise {
       }
     }
   } else {
+    fields_only(condition, ["field", "op", "value"])
     if str(get(condition, "field")) == "" {
       raise InputError("filter field cannot be empty")
     }

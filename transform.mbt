@@ -83,7 +83,12 @@ fn transform_row(row : Value, columns : Array[Value]) -> Value raise InputError 
       }
       if get(column, "scale") != Null {
         let scaled = num(value) * num(get(column, "scale"))
-        if scaled.is_inf() || scaled.is_nan() {
+        if scaled.is_inf() ||
+          scaled.is_nan() ||
+          (
+            optional_str(get(column, "type"), "any") == "integer" &&
+            scaled.floor() != scaled
+          ) {
           raise InputError("scaled number overflow: " + from)
         }
         value = Number(scaled)
@@ -98,8 +103,8 @@ fn transform_row(row : Value, columns : Array[Value]) -> Value raise InputError 
 fn compare_value(a : Value, b : Value) -> Int32 {
   match (a, b) {
     (Number(x), Number(y)) => x.compare(y)
-    (String(x), String(y)) => x.compare(y)
-    _ => canonical(a).compare(canonical(b))
+    (String(x), String(y)) => lexical_compare(x, y)
+    _ => lexical_compare(canonical(a), canonical(b))
   }
 }
 
@@ -135,6 +140,8 @@ pub fn join_rows(
   prefix~ : String = "right_",
   inner~ : Bool = false,
 ) -> Array[Value] raise InputError {
+  ignore(named_field(String(left_key)))
+  ignore(named_field(String(right_key)))
   let index : Map[String, Value] = {}
   for row in right {
     let value = get(row, right_key)

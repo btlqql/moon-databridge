@@ -1,5 +1,6 @@
 ///|
 pub fn run(request : Value) -> Value raise {
+  validate_pipeline(request)
   let columns = get(request, "columns")
   validate_columns(columns)
   ignore(quality_gate(get(request, "quality_gate"), 0, 0))

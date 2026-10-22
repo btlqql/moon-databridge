@@ -440,5 +440,232 @@
       ]
     },
     "error": false
+  },
+  {
+    "name": "review lexical sort",
+    "request": {
+      "rows": [
+        {
+          "s": "b"
+        },
+        {
+          "s": "aa"
+        },
+        {
+          "s": "a"
+        }
+      ],
+      "sort": "s"
+    },
+    "expected": {
+      "rows": [
+        {
+          "s": "a"
+        },
+        {
+          "s": "aa"
+        },
+        {
+          "s": "b"
+        }
+      ]
+    },
+    "error": false
+  },
+  {
+    "name": "review lexical filter",
+    "request": {
+      "rows": [
+        {
+          "s": "b"
+        },
+        {
+          "s": "aa"
+        }
+      ],
+      "filter": {
+        "field": "s",
+        "op": "gt",
+        "value": "aa"
+      }
+    },
+    "expected": {
+      "rows": [
+        {
+          "s": "b"
+        }
+      ]
+    },
+    "error": false
+  },
+  {
+    "name": "review integer scale preserves type",
+    "request": {
+      "rows": [
+        {
+          "n": 3
+        },
+        {
+          "n": 4
+        }
+      ],
+      "columns": [
+        {
+          "source": "n",
+          "type": "integer",
+          "scale": 0.5
+        }
+      ],
+      "quality_gate": {
+        "max_rejected": 0
+      }
+    },
+    "expected": {
+      "rows": [
+        {
+          "n": 2
+        }
+      ],
+      "audit/rejected": 1,
+      "audit/conserved": true,
+      "quality_gate/passed": false
+    },
+    "error": false
+  },
+  {
+    "name": "review unknown request",
+    "request": {
+      "rows": [],
+      "typo": true
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "name": "review unknown column",
+    "request": {
+      "rows": [],
+      "columns": [
+        {
+          "source": "n",
+          "required_typo": true
+        }
+      ]
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "name": "review unknown leaf condition",
+    "request": {
+      "rows": [],
+      "filter": {
+        "field": "n",
+        "operator_typo": "gt"
+      }
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "name": "review invalid empty join flag",
+    "request": {
+      "rows": [],
+      "join": {
+        "rows": [],
+        "left_key": "id",
+        "right_key": "id",
+        "inner": "false"
+      }
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "name": "review empty join key",
+    "request": {
+      "rows": [],
+      "join": {
+        "rows": [],
+        "left_key": "",
+        "right_key": "id"
+      }
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "name": "review empty group value",
+    "request": {
+      "rows": [],
+      "group": {
+        "keys": [],
+        "value": ""
+      }
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "name": "review duplicate group key",
+    "request": {
+      "rows": [],
+      "group": {
+        "keys": [
+          "id",
+          "id"
+        ],
+        "value": "n"
+      }
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "name": "review duplicate export key",
+    "request": {
+      "rows": [],
+      "export_columns": [
+        "id",
+        "id"
+      ]
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "name": "review empty export key",
+    "request": {
+      "rows": [],
+      "export_columns": []
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "name": "review duplicate dedup key",
+    "request": {
+      "rows": [],
+      "deduplicate": [
+        "id",
+        "id"
+      ]
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "name": "review unknown join property",
+    "request": {
+      "rows": [],
+      "join": {
+        "rows": [],
+        "left_key": "id",
+        "right_key": "id",
+        "innre": true
+      }
+    },
+    "expected": {},
+    "error": true
   }
 ]
