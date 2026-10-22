@@ -3,9 +3,9 @@
 Tabular data pipelines, implemented in MoonBit with a JSON CLI and reusable library API.
 
 - Repository: [https://github.com/btlqql/moon-databridge](https://github.com/btlqql/moon-databridge)
-- Package: `btlqql/moon_databridge@0.3.0`
+- Package: `btlqql/moon_databridge@0.4.0`
 - License: Apache-2.0
-- Release scope: **0.2.0 revised component release**. The broader competition proposal in `docs/proposal.md` is a reference design, not a claim that every planned capability is implemented.
+- Release scope: **0.4.0 validated batch pipeline**, including strict option preflight, lexical string comparison and integer-preserving scaling. [Repository review and history evidence](docs/review-20261022.md).
 
 ## Implemented
 
@@ -27,7 +27,7 @@ Pass `-` to read a UTF-8 JSON request from stdin. A single request must be at mo
 ## Library use
 
 ```sh
-moon add btlqql/moon_databridge@0.3.0
+moon add btlqql/moon_databridge@0.4.0
 ```
 
 In the consumer's `moon.pkg`:
@@ -63,7 +63,7 @@ There are 18 checked fixture cases in `tests/cases.json`, executed both in MoonB
 
 ## Current boundaries
 
-Batch in memory. JSONL diagnostics preserve physical line numbers; transformation diagnostics use parsed row indices. Missing/null join keys and duplicate right keys are rejected. Arithmetic uses finite Double; decimal accounting and streaming are outside this release. Column order for CSV export must be explicit. The CSV reader is strict about quotes and column widths; malformed CSV rejects the batch.
+Batch in memory. JSONL diagnostics preserve physical line numbers; transformation diagnostics use parsed row indices. Missing/null or duplicate right join keys are rejected. Missing/null left keys are unmatched: retained by a left join, removed by an inner join. Arithmetic uses finite Double; decimal accounting and streaming are outside this release. Column order for CSV export must be explicit. The CSV reader is strict about quotes and column widths; malformed CSV rejects the batch.
 
 See [source and dependency attribution](THIRD_PARTY.md). This release does not establish competition eligibility or organizer acceptance.
 
@@ -87,6 +87,17 @@ moon run cmd/main --target js -- examples/scenario-4.json
 
 组合筛选只组合已有叶条件，不支持任意脚本。排序及既有叶比较沿用当前值比较语义；它不是数据库查询优化器。
 
-Repository release: 0.3.0; installable MoonCakes module: `btlqql/moon_databridge@0.3.0`. Earlier repository 1.0.0 labels are retained as history; the module uses the registry-compatible zero-major sequence.
+Current repository release: 0.4.0; installable MoonCakes module: `btlqql/moon_databridge@0.4.0`. Earlier repository 1.0.0 labels are retained as history; the module uses the registry-compatible zero-major sequence.
 
-Current source contains 20 MoonBit test declarations and 18 CLI fixtures (generated fixture tests are included in the declaration count). Run `python -B scripts/followup_reference.py` for independent follow-up oracles and `examples/followup-20261018.json` for the new scenario.
+The 0.3.0 snapshot contained 20 MoonBit test declarations and 18 CLI fixtures (generated fixture tests are included in the declaration count). Run `python -B scripts/followup_reference.py` for independent follow-up oracles and `examples/followup-20261018.json` for the new scenario.
+
+## 2026-10-22 review / 0.4.0
+
+34 core tests and32 CLI/API fixtures. New regressions validate lexical string sorting/ranges, empty-input option rejection, duplicate/empty field names, boolean join configuration and integer scaling. Independent Python review oracle:40 pipelines /1000 input rows, seed20261022. Public history already had13 post-2026-09-01 commits before this review; `python -B scripts/submission-evidence.py` reads the current public branch, cutoff, commit URLs and dates. Current passing CI/history evidence does not establish the reason for a later organizer rejection or record a competition form update.
+
+Strict unknown-option rejection is a compatibility change in0.4.0. Numeric min/max/enum checks occur before scale; integer columns cannot emit a fractional scaled value. No streaming or database-writing capabilities are claimed. [Detailed review and current boundaries](docs/review-20261022.md).
+
+```sh
+python -B scripts/review-reference.py
+python -B scripts/submission-evidence.py
+```
